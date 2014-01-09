@@ -2,6 +2,7 @@ import pyaudio
 import quietnet
 import options
 import psk
+import argparse
 
 FORMAT = pyaudio.paInt16
 CHANNELS = options.channels
@@ -45,6 +46,19 @@ def play_buffer(buffer):
     for sample in buffer:
         stream.write(sample)
 
+parser = argparse.ArgumentParser(description='Send a string.')
+parser.add_argument("message", nargs='+', help='the massage to be sent')
+args = parser.parse_args()
+message = ' '.join(args.message)
+if len(message) > 0:
+    pattern = psk.encode(message)
+    buffer = make_buffer_from_bit_pattern(pattern, FREQ, FREQ_OFF)
+    play_buffer(buffer)
+    stream.stop_stream()
+    stream.close()
+    p.terminate()
+    
+'''
 if __name__ == "__main__":
     print "Welcome to quietnet. Use ctrl-c to exit"
 
@@ -62,3 +76,4 @@ if __name__ == "__main__":
         stream.close()
         p.terminate()
         print "exited cleanly"
+'''
